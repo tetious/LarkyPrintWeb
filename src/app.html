@@ -1,0 +1,14 @@
+<template>
+  <style>
+    gage {
+      display: block;
+    }
+  </style>
+  <require from="./resources/elements/gage"></require>
+  <div>
+    <gage style="width: 250px; height: 250px" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
+  </div>
+  <div>
+    <gage style="width: 250px; height: 250px" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
+  </div>
+</template>
