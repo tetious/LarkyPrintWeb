@@ -11,4 +11,6 @@
   <div>
     <gage style="width: 250px; height: 250px" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
   </div>
+  <input type="file" files.bind="files" />
+  <button click.trigger="upload()">Upload</button>
 </template>

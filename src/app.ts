@@ -4,11 +4,16 @@ import { PrinterService, PrinterStatus } from './services/printerService';
 @autoinject
 export class App {
   @bindable printer: PrinterStatus;
+  @bindable files: FileList;
+
   constructor(private printerService: PrinterService) {
-    this.printerService.SubscribeStatusUpdates((s) => {
+    this.printerService.subscribeStatusUpdates((s) => {
       this.printer = s;
-      console.log(s);
     });
   }
-  message = 'Hello World!';
+
+  upload() {
+    console.log("files:" , this.files);
+    this.printerService.uploadFile(this.files[0]);
+  }
 }

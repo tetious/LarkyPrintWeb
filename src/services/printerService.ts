@@ -1,3 +1,5 @@
+import { SocketHelper } from './socketHelper';
+import { autoinject } from 'aurelia-dependency-injection';
 
 interface Temperatature {
   set: number;
@@ -10,15 +12,14 @@ export interface PrinterStatus {
 }
 
 export class PrinterService {
-  constructor(private ws = new WebSocket("ws://192.168.0.149")) {
-    ws.onmessage = this.websocketMessage;
-    console.log(ws.readyState);
-  }
+  constructor(private ws = new SocketHelper(new WebSocket("ws://192.168.0.149"))) {  }
 
   private statusUpdate: (PrinterStatus) => void = null;
 
   private websocketMessage = (ev: MessageEvent) => {
     // 184/0   183/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
+    // 152/0  151/0  ?   0 ?   0?  0   100%SD---%00:00Glide [2017.08.12] r
+    // 153/0   153/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
     if(!ev.data) { return; }
     var bits = ev.data.split(' ').filter(i => i !!=false);
     if(bits.length !== 10) { return; }
@@ -28,10 +29,11 @@ export class PrinterService {
     if(this.statusUpdate) this.statusUpdate(status);
   }
 
-  private updateStatus() {
+  uploadFile(file: File) {
+    this.ws.fileUpload(file);
   }
   
-  SubscribeStatusUpdates(hook: (PrinterStatus) => void) {
+  subscribeStatusUpdates(hook: (PrinterStatus) => void) {
     this.statusUpdate = hook;
   }
 }
