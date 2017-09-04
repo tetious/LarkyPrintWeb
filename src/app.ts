@@ -13,7 +13,21 @@ export class App {
   }
 
   upload() {
-    console.log("files:" , this.files);
+    console.log("files:", this.files);
     this.printerService.uploadFile(this.files[0]);
+  }
+
+  menu(which) {
+    switch (which) {
+      case "up":
+        this.printerService.menuUp();
+        break;
+      case "down":
+        this.printerService.menuDown();
+        break;
+      case "click":
+        this.printerService.menuClick();
+        break;
+    }
   }
 }

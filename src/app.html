@@ -4,13 +4,40 @@
       display: block;
     }
   </style>
+
+  <require from="bootstrap/css/bootstrap.css"></require>
   <require from="./resources/elements/gage"></require>
-  <div>
-    <gage style="width: 250px; height: 250px" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <gage style="width: 250px; height: 250px" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
+      </div>
+      <div class="col">
+        buttons
+      </div>
+      <div class="col">
+          buttons
+        </div>
+      </div>
+    <div class="row">
+      <div class="col">
+        <gage style="width: 250px; height: 250px" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
+      </div>
+      <div class="col">
+        <button class="btn btn-lg btn-block btn-light" click.trigger="menu('up')"><img src="/iconic/arrow-top.svg"></button><br/>
+        <button class="btn btn-lg btn-block btn-light" click.trigger="menu('click')">.</button><br/>
+        <button class="btn btn-lg btn-block btn-light" click.trigger="menu('down')"><img src="/iconic/arrow-bottom.svg"></button>
+      </div>
+      <div class="col">
+          buttons
+        </div>        
+    </div>
+    <div class="row">
+      <div class="col">
+        <input type="file" files.bind="files" />
+        <button click.trigger="upload()">Upload</button>
+      </div>
+    </div>
   </div>
-  <div>
-    <gage style="width: 250px; height: 250px" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
-  </div>
-  <input type="file" files.bind="files" />
-  <button click.trigger="upload()">Upload</button>
 </template>

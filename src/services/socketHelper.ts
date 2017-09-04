@@ -1,9 +1,26 @@
 import "../utils";
 
-enum OpCode {
+export enum OpCode {
   fileUploadStart = "fileUploadStart",
   fileUploadComplete = "fileUploadComplete",
-  fileUploadChunkAck = "fileUploadChunkAck"
+  fileUploadChunkAck = "fileUploadChunkAck",
+  printerStatus = "printerStatus",
+  menuClick = "menuClick",
+  menuUp = "menuUp",
+  menuDown = "menuDown"
+}
+
+interface Op {
+  op: OpCode;
+}
+
+interface OpFileUploadStart extends Op {
+  name: string;
+  size: number;
+}
+
+interface OpPrinterStatus extends Op {
+  msg: string;
 }
 
 export class SocketHelper {
@@ -19,7 +36,7 @@ export class SocketHelper {
     }
   }
 
-  private sendOp(obj: Object) {
+  sendOp<T extends Op>(obj: T) {
     this.ws.send(JSON.stringify(obj));
   }
 

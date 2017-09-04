@@ -1,4 +1,4 @@
-import { SocketHelper } from './socketHelper';
+import { SocketHelper, OpCode } from './socketHelper';
 import { autoinject } from 'aurelia-dependency-injection';
 
 interface Temperatature {
@@ -32,7 +32,19 @@ export class PrinterService {
   uploadFile(file: File) {
     this.ws.fileUpload(file);
   }
+
+  menuClick() {
+    this.ws.sendOp({op: OpCode.menuClick});
+  }
+
+  menuUp() {
+    this.ws.sendOp({op: OpCode.menuUp});
+  }
   
+  menuDown() {
+    this.ws.sendOp({op: OpCode.menuDown});    
+  }
+
   subscribeStatusUpdates(hook: (PrinterStatus) => void) {
     this.statusUpdate = hook;
   }
