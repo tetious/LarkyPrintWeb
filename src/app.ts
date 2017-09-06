@@ -17,6 +17,10 @@ export class App {
     this.printerService.uploadFile(this.files[0]);
   }
 
+  sdSwap() {
+    this.printerService.sendOp("swapSD");
+  }
+
   menu(which) {
     switch (which) {
       case "up":
