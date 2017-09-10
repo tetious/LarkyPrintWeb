@@ -15,6 +15,11 @@ interface PrinterStatusMessage {
   status: string;
 }
 
+interface FileListing {
+  name: string;
+  size: number;
+}
+
 export class PrinterService {
   constructor(private ws = new SocketHelper(new WebSocket("ws://192.168.0.149"))) { 
     this.ws.sub(OpCode.printerStatus, this.statusUpdateMessage);
@@ -35,9 +40,9 @@ export class PrinterService {
     if (this.statusUpdate) this.statusUpdate(status);
   }
 
-  uploadFile(file: File) {
-    this.ws.fileUpload(file);
-  }
+  onOpen = this.ws.onOpen;
+
+  uploadFile = this.ws.fileUpload;
 
   menuClick() {
     this.ws.sendOp({ op: OpCode.menuClick });
@@ -51,6 +56,13 @@ export class PrinterService {
     this.ws.sendOp({ op: op });
   }
 
+  getSDFiles() : Promise<FileListing[]> {
+    return new Promise(resolve => {
+      this.ws.sendOp({ op: OpCode.fileListing }, msg => {
+        resolve(msg.files);
+      })
+    });
+  }
 
   menuDown() {
     this.ws.sendOp({ op: OpCode.menuDown });

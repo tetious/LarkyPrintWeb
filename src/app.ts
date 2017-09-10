@@ -5,20 +5,41 @@ import { PrinterService, PrinterStatus } from './services/printerService';
 export class App {
   @bindable printer: PrinterStatus;
   @bindable files: FileList;
+  @bindable sdFiles;
+  @bindable sdUpload: HTMLButtonElement;
+  @bindable uploadPercent;
+  @bindable uploading;
 
   constructor(private printerService: PrinterService) {
     this.printerService.subscribeStatusUpdates((s) => {
       this.printer = s;
     });
+    this.printerService.onOpen.push(() => {
+      this.getSdFiles();
+    });
+  }
+
+  attached() {
   }
 
   upload() {
-    console.log("files:", this.files);
-    this.printerService.uploadFile(this.files[0]);
+    this.sdUpload.click();
   }
 
-  sdSwap() {
-    this.printerService.sendOp("swapSD");
+  filesChanged() {
+    if (this.files && this.files.length == 1) {
+      this.uploading = true;
+      this.printerService.uploadFile(this.files[0], pct => {
+        this.uploadPercent = pct;
+        if (pct >= 100) {
+          this.uploading = false;
+        }
+      });
+    }
+  }
+
+  getSdFiles() {
+    this.printerService.getSDFiles().then(files => this.sdFiles = files);
   }
 
   menu(which) {
