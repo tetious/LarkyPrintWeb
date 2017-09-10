@@ -2,7 +2,6 @@ import * as gulp from 'gulp';
 import * as changedInPlace from 'gulp-changed-in-place';
 import * as plumber from 'gulp-plumber';
 import * as sourcemaps from 'gulp-sourcemaps';
-import * as notify from 'gulp-notify';
 import * as rename from 'gulp-rename';
 import * as ts from 'gulp-typescript';
 import * as project from '../aurelia.json';
@@ -31,7 +30,7 @@ function buildTypeScript() {
     .pipe(changedInPlace({firstPass: true}));
 
   return eventStream.merge(dts, src)
-    .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
+    .pipe(plumber())
     .pipe(sourcemaps.init())
     .pipe(typescriptCompiler())
     .pipe(sourcemaps.write({ sourceRoot: 'src' }))
