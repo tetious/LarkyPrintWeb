@@ -6,6 +6,7 @@
   </style>
 
   <require from="bootstrap/css/bootstrap.css"></require>
+  <require from="css/main.css"></require>
   <require from="./resources/elements/gage"></require>
 
   <div class="container">
@@ -13,18 +14,27 @@
       <div class="col-sm-8">
         <div class="row">
           <div class="col-sm">
-            <gage style="width: 250px; height: 250px" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
+            <gage style="width: 250px; margin:auto;" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
           </div>
           <div class="col-sm">
-            <gage style="width: 250px; height: 250px" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
+            <gage style="width: 250px; margin:auto;" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
           </div>
         </div>
         <div class="row">
           <div class="col-sm">
-            <button class="btn btn-lg btn-block btn-light" click.trigger="menu('up')"><img src="/iconic/arrow-top.svg"></button><br/>
-            <button class="btn btn-lg btn-block btn-light" click.trigger="menu('click')">.</button><br/>
-            <button class="btn btn-lg btn-block btn-light" click.trigger="menu('down')"><img src="/iconic/arrow-bottom.svg"></button>
+            <div class="printer-screen">
+              <div repeat.for="line of screen">
+                <span repeat.for="c of line.split('')">${c}</span>
+              </div>
+            </div>
+            <div class="btn-group-vertical printer-screen-buttons">
+              <button class="btn btn-outline-dark" click.trigger="menu('up')"><img src="/iconic/arrow-top.svg"></button>
+              <button class="btn btn-outline-dark" click.trigger="menu('click')">.</button>
+              <button class="btn btn-outline-dark" click.trigger="menu('down')"><img src="/iconic/arrow-bottom.svg"></button>
+            </div>
           </div>
+        </div>
+        <div class="row">
           <div class="col-sm">
             <button class="btn btn-lg btn-block btn-light" click.trigger="getSdFiles()">getfiles</button>
           </div>
@@ -41,12 +51,11 @@
           </table>
         </div>
         <div class="progress" if.bind="uploading">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-           style="width: ${uploadPercent}%;"></div>
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${uploadPercent}%;"></div>
         </div>
         <div style="margin-top: 2px;">
-            <input element.ref="sdUpload" files.bind="files" type="file" hidden/>
-            <button class="btn btn-block btn-primary" click.delegate="upload()">Upload</button>    
+          <input element.ref="sdUpload" files.bind="files" type="file" hidden/>
+          <button class="btn btn-block btn-primary" click.delegate="upload()">Upload</button>
         </div>
       </div>
     </div>

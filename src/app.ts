@@ -9,10 +9,14 @@ export class App {
   @bindable sdUpload: HTMLButtonElement;
   @bindable uploadPercent;
   @bindable uploading;
+  @bindable screen: string[];
 
   constructor(private printerService: PrinterService) {
     this.printerService.subscribeStatusUpdates((s) => {
       this.printer = s;
+    });
+    this.printerService.subscribeScreenUpdates(s => {
+     this.screen = s;
     });
     this.printerService.onOpen.push(() => {
       this.getSdFiles();
