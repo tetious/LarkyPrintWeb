@@ -63,7 +63,7 @@ export class SocketHelper {
     var chunkSize = 32 * 1024; // bytes
     var offset = 0;
 
-    this.sendOp({ op: OpCode.fileUploadStart, name: "/" + file.name, size: file.size });
+    this.sendOp({ op: OpCode.fileUploadStart, name: "/sd/" + file.name, size: file.size });
 
     // read next chunk on ack
     this.sub(OpCode.fileUploadChunkAck, _ => readChunk(offset, chunkSize, file));

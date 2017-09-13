@@ -21,7 +21,7 @@ interface FileListing {
 }
 
 export class PrinterService {
-  constructor(private ws = new SocketHelper(new WebSocket("ws://192.168.0.149"))) {
+  constructor(private ws = new SocketHelper(new WebSocket("ws://192.168.0.169"))) {
     this.ws.sub(OpCode.printerStatus, this.statusUpdateMessage);
   }
 
