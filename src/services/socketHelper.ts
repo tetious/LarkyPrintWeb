@@ -5,7 +5,7 @@ export enum OpCode {
   fileUploadStart = "fileUploadStart",
   fileUploadComplete = "fileUploadComplete",
   fileUploadChunkAck = "fileUploadChunkAck",
-  printerStatus = "printerStatus",
+  screenUpdate = "screenUpdate",
   menuClick = "menuClick",
   menuUp = "menuUp",
   menuDown = "menuDown"

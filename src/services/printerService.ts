@@ -12,7 +12,7 @@ export interface PrinterStatus {
 }
 
 interface PrinterStatusMessage {
-  status: string;
+  s: number[];
 }
 
 interface FileListing {
@@ -22,7 +22,7 @@ interface FileListing {
 
 export class PrinterService {
   constructor(private ws = new SocketHelper(new WebSocket("ws://192.168.0.169"))) {
-    this.ws.sub(OpCode.printerStatus, this.statusUpdateMessage);
+    this.ws.sub(OpCode.screenUpdate, this.statusUpdateMessage);
   }
 
   private statusUpdate: (PrinterStatus) => void = null;
@@ -32,9 +32,17 @@ export class PrinterService {
     // 184/0   183/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
     // 152/0  151/0  ?   0 ?   0?  0   100%SD---%00:00Glide [2017.08.12] r
     // 153/0   153/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
-    if (!ev.status) { return; }
-    if (this.screenUpdateCb) {       this.screenUpdateCb(ev.status.match(/.{20}/g));     }
-    var bits = ev.status.substr(0, 54).split(' ').filter(i => i !== '');
+
+    if (!ev.s) { return; }
+    var str = ev.s.map(i => i > 39 ? String.fromCharCode(i) : ' ').join('');    
+    if (this.screenUpdateCb) {
+      const lines = [], source = ev.s;
+      while(source.length > 0) {
+        lines.push(source.splice(0, 20));
+      }
+      this.screenUpdateCb(lines);
+    }
+    var bits = str.substr(0, 54).split(' ').filter(i => i !== '');
     if (bits.length !== 10) { return; }
     var e0 = bits[0].split('/');
     var bed = bits[1].split('/');

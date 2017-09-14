@@ -24,7 +24,7 @@
           <div class="col-sm">
             <div class="printer-screen">
               <div repeat.for="line of screen">
-                <span repeat.for="c of line.split('')">${c}</span>
+                <span repeat.for="c of line" innerhtml.bind="c | printerScreenCharacter"></span>
               </div>
             </div>
             <div class="btn-group-vertical printer-screen-buttons">
