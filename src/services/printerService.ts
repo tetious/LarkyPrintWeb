@@ -1,5 +1,6 @@
 import { SocketHelper, OpCode } from './socketHelper';
-import { autoinject } from 'aurelia-dependency-injection';
+import { autoinject, inject } from 'aurelia-dependency-injection';
+import { HttpClient } from 'aurelia-http-client';
 
 interface Temperatature {
   set: number;
@@ -20,13 +21,15 @@ interface FileListing {
   size: number;
 }
 
+@inject(HttpClient)
 export class PrinterService {
-  constructor(private ws = new SocketHelper(new WebSocket("ws://192.168.0.169"))) {
+  constructor(private http: HttpClient, private ws = new SocketHelper("ws://192.168.0.169/ws")) {
     this.ws.sub(OpCode.screenUpdate, this.statusUpdateMessage);
   }
 
   private statusUpdate: (PrinterStatus) => void = null;
   private screenUpdateCb: ([]) => void = null;
+  private apiBase = "http://192.168.0.169";
 
   private statusUpdateMessage = (ev: PrinterStatusMessage) => {
     // 184/0   183/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
@@ -34,10 +37,10 @@ export class PrinterService {
     // 153/0   153/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
 
     if (!ev.s) { return; }
-    var str = ev.s.map(i => i > 39 ? String.fromCharCode(i) : ' ').join('');    
+    var str = ev.s.map(i => i > 39 ? String.fromCharCode(i) : ' ').join('');
     if (this.screenUpdateCb) {
       const lines = [], source = ev.s;
-      while(source.length > 0) {
+      while (source.length > 0) {
         lines.push(source.splice(0, 20));
       }
       this.screenUpdateCb(lines);
@@ -52,7 +55,18 @@ export class PrinterService {
 
   onOpen = this.ws.onOpen;
 
-  uploadFile = this.ws.fileUpload;
+  uploadFile(file: File, progress: (pct) => void) {
+    const form= new FormData();
+    form.append("file", file);
+
+    return new Promise(resolve => {
+    this.http.createRequest(this.apiBase + "/sd")
+      .asPost()
+      .withProgressCallback(f => progress(f.loaded / f.total * 100))
+      .withContent(form)
+      .send().then(r => resolve());
+    });
+  }
 
   menuClick() {
     this.ws.sendOp({ op: OpCode.menuClick });
@@ -68,9 +82,7 @@ export class PrinterService {
 
   getSDFiles(): Promise<FileListing[]> {
     return new Promise(resolve => {
-      this.ws.sendOp({ op: OpCode.fileListing }, msg => {
-        resolve(msg.files);
-      })
+      this.http.get(this.apiBase + "/sd").then(r => resolve(r.content.files));
     });
   }
 

@@ -26,12 +26,26 @@ interface OpPrinterStatus extends Op {
 
 export class SocketHelper {
   private opcodeHooks = {};
+  private ws: WebSocket;
 
-  constructor(private ws: WebSocket) {
-    ws.binaryType = "arraybuffer";
-    ws.onopen = _ => { if (this.onOpen) this.onOpen.forEach(onOpen => onOpen()); };
-    ws.onmessage = ev => {
-      const msg = JSON.parse(ev.data);
+  constructor(private url) {
+    this.ws = new WebSocket(url);
+    this.initSocket();
+  }
+
+  private initSocket() {
+    this.ws.onopen = _ => { if (this.onOpen) this.onOpen.forEach(onOpen => onOpen()); };
+    this.ws.onclose = ev => {
+      this.ws = new WebSocket(this.url);
+      this.initSocket();
+    }
+    this.ws.onmessage = ev => {
+      const str: string = ev.data;
+      if(str.indexOf("{") < 0) {
+        console.log(str);
+        return;
+      }
+      const msg = JSON.parse(str);
       if (msg && msg.op && this.opcodeHooks[msg.op]) {
         this.opcodeHooks[msg.op](msg);
       }

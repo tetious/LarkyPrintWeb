@@ -19,7 +19,7 @@ export class App {
      this.screen = s;
     });
     this.printerService.onOpen.push(() => {
-      this.getSdFiles();
+      //this.getSdFiles();
     });
   }
 
@@ -35,10 +35,7 @@ export class App {
       this.uploading = true;
       this.printerService.uploadFile(this.files[0], pct => {
         this.uploadPercent = pct;
-        if (pct >= 100) {
-          this.uploading = false;
-        }
-      });
+      }).then(() => this.uploading = false);
     }
   }
 
