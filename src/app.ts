@@ -19,7 +19,7 @@ export class App {
      this.screen = s;
     });
     this.printerService.onOpen.push(() => {
-      //this.getSdFiles();
+      this.getSdFiles();
     });
   }
 
@@ -44,16 +44,6 @@ export class App {
   }
 
   menu(which) {
-    switch (which) {
-      case "up":
-        this.printerService.menuUp();
-        break;
-      case "down":
-        this.printerService.menuDown();
-        break;
-      case "click":
-        this.printerService.menuClick();
-        break;
-    }
+    this.printerService.menu(which);
   }
 }

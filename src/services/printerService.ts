@@ -23,18 +23,23 @@ interface FileListing {
 
 @inject(HttpClient)
 export class PrinterService {
-  constructor(private http: HttpClient, private ws = new SocketHelper("ws://192.168.0.169/ws")) {
-    this.ws.sub(OpCode.screenUpdate, this.statusUpdateMessage);
+  constructor(private http: HttpClient) {
+    this.events = new EventSource('http://192.168.0.169/events');
+    this.events.addEventListener('screenUpdate', this.statusUpdateMessage);
+    this.events.onopen = _ => { if (this.onOpen) this.onOpen.forEach(onOpen => onOpen()); };
   }
 
   private statusUpdate: (PrinterStatus) => void = null;
   private screenUpdateCb: ([]) => void = null;
   private apiBase = "http://192.168.0.169";
+  private events: EventSource;
 
-  private statusUpdateMessage = (ev: PrinterStatusMessage) => {
+  private statusUpdateMessage = (e) => {
     // 184/0   183/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
     // 152/0  151/0  ?   0 ?   0?  0   100%SD---%00:00Glide [2017.08.12] r
     // 153/0   153/0   ?   0 ?   0 ?  0    100%  SD---% 00:00Glide [2017.08.12] r
+
+    const ev : PrinterStatusMessage = JSON.parse(e.data);
 
     if (!ev.s) { return; }
     var str = ev.s.map(i => i > 39 ? String.fromCharCode(i) : ' ').join('');
@@ -53,41 +58,29 @@ export class PrinterService {
     if (this.statusUpdate) this.statusUpdate(status);
   }
 
-  onOpen = this.ws.onOpen;
+  onOpen: { (): void; }[] = [];
 
   uploadFile(file: File, progress: (pct) => void) {
-    const form= new FormData();
+    const form = new FormData();
     form.append("file", file);
 
     return new Promise(resolve => {
-    this.http.createRequest(this.apiBase + "/sd")
-      .asPost()
-      .withProgressCallback(f => progress(f.loaded / f.total * 100))
-      .withContent(form)
-      .send().then(r => resolve());
+      this.http.createRequest(this.apiBase + "/sd")
+        .asPost()
+        .withProgressCallback(f => progress(f.loaded / f.total * 100))
+        .withContent(form)
+        .send().then(r => resolve());
     });
   }
 
-  menuClick() {
-    this.ws.sendOp({ op: OpCode.menuClick });
-  }
-
-  menuUp() {
-    this.ws.sendOp({ op: OpCode.menuUp });
-  }
-
-  sendOp(op) {
-    this.ws.sendOp({ op: op });
+  menu(action: string) {
+    this.http.get(this.apiBase + "/menu/" + action);
   }
 
   getSDFiles(): Promise<FileListing[]> {
     return new Promise(resolve => {
       this.http.get(this.apiBase + "/sd").then(r => resolve(r.content.files));
     });
-  }
-
-  menuDown() {
-    this.ws.sendOp({ op: OpCode.menuDown });
   }
 
   subscribeStatusUpdates(hook: (PrinterStatus) => void) {
