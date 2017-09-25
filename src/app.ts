@@ -7,7 +7,7 @@ export class App {
   @bindable files: FileList;
   @bindable sdFiles;
   @bindable sdUpload: HTMLButtonElement;
-  @bindable uploadPercent;
+  @bindable uploadPercent = 0;
   @bindable uploading;
   @bindable screen: string[];
 

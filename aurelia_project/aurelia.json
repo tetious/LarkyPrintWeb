@@ -30,9 +30,6 @@
       {
         "name": "vendor-bundle.js",
         "prepend": [
-          "node_modules/bluebird/js/browser/bluebird.core.js",
-          "node_modules/aurelia-cli/lib/resources/scripts/configure-bluebird.js",
-          "node_modules/popper.js/dist/umd/popper.min.js",
           "node_modules/requirejs/require.js"
         ],
         "dependencies": [
@@ -75,47 +72,28 @@
             "env": "dev"
           },
           {
-            "name": "raphael",
-            "path": "../node_modules/raphael",
-            "main": "raphael",
-            "exports": "Raphael"
-          },
-          {
-            "name": "justgage",
-            "path": "../lib",
-            "main": "justgage",
-            "deps": [
-              "raphael"
-            ],
-            "exports": "JustGage"
-          },
-          "velocity-animate",
-          "tether",
-          {
-            "name": "aurelia-bootstrap",
-            "path": "../node_modules/aurelia-bootstrap/dist/amd",
-            "main": "index",
+            "name": "mini-css",
+            "path": "../node_modules/mini.css/dist/",
+            "main": "mini-default.min.css",
             "resources": [
-              "**/*.html"
+              "mini-default.min.css"
             ]
           },
-          "jquery",
           {
-            "name": "bootstrap",
-            "path": "../node_modules/bootstrap/dist",
-            "main": "js/bootstrap.min",
-            "deps": [
-              "jquery"
-            ],
-            "exports": "$",
+            "name": "iconic",
+            "path": "../node_modules/open-iconic/font/css",
+            "main": "open-iconic.min.css",
             "resources": [
-              "css/bootstrap.css"
+              "open-iconic.min.css"
             ]
           },
-          "text"          
+          "text"
         ]
       }
     ],
+    "copyFiles": {
+      "node_modules/open-iconic/font/fonts/open-iconic.woff" : "./fonts"
+    },
     "loader": {
       "type": "require",
       "configTarget": "vendor-bundle.js",

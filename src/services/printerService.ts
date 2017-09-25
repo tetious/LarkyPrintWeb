@@ -24,14 +24,14 @@ interface FileListing {
 @inject(HttpClient)
 export class PrinterService {
   constructor(private http: HttpClient) {
-    this.events = new EventSource('http://192.168.0.169/events');
+    this.events = new EventSource(this.apiBase + '/events');
     this.events.addEventListener('screenUpdate', this.statusUpdateMessage);
     this.events.onopen = _ => { if (this.onOpen) this.onOpen.forEach(onOpen => onOpen()); };
   }
 
   private statusUpdate: (PrinterStatus) => void = null;
   private screenUpdateCb: ([]) => void = null;
-  private apiBase = "http://192.168.0.169";
+  private apiBase = "http://192.168.0.140";
   private events: EventSource;
 
   private statusUpdateMessage = (e) => {
