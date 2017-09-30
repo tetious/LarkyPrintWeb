@@ -9,20 +9,7 @@ export class Gage {
   @bindable label = "";
   @bindable value = 0;
 
-  valueChanged(newValue) {
-    if(!this.guage) { return; }
-    this.guage.refresh(newValue);
-  }
-
   attached() {
-    this.guage = new JustGage({
-      parentNode: this.div,
-      min: this.min,
-      max: this.max,
-      title: this.title,
-      label: this.label,
-      value: this.value     
-    });
   }
 
 }

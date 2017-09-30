@@ -1,64 +1,8 @@
 <template>
-  <style>
-    gage {
-      display: block;
-    }
-  </style>
+    <require from="css/main.css"></require>
+    <require from="mini-css/mini-default.min.css"></require>
+    <require from="iconic/open-iconic.min.css"></require>
 
-  <require from="css/main.css"></require>
-  <require from="mini-css/mini-default.min.css"></require>
-  <require from="iconic/open-iconic.min.css"></require>
+    <router-view></router-view>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-8">
-        <div class="row">
-          <div class="col-sm">
-            <gage style="width: 250px; margin:auto;" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
-          </div>
-          <div class="col-sm">
-            <gage style="width: 250px; margin:auto;" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm">
-            <div class="printer-screen">
-              <div repeat.for="line of screen">
-                <span repeat.for="c of line" innerhtml.bind="c | printerScreenCharacter"></span>
-              </div>
-            </div>
-            <div class="btn-group-vertical printer-screen-buttons">
-              <button class="btn btn-outline-dark" click.trigger="menu('up')"><i class="oi" data-glyph="arrow-top"></i></button>
-              <button class="btn btn-outline-dark" click.trigger="menu('click')">.</button>
-              <button class="btn btn-outline-dark" click.trigger="menu('down')"><i class="oi" data-glyph="arrow-bottom"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-        </div>
-      </div>
-      <div class="col-sm">
-        <button class="btn btn-light" style="float: right" click.trigger="getSdFiles()"><span class="oi" data-glyph="reload"></span></button>
-        <h3>SD Card</h3>
-        <div style="overflow: auto; height: 500px">
-          <table class="table table-sm">
-            <tr repeat.for="file of sdFiles">
-              <td>${file.name}</td>
-              <td>${file.size | humanFileSize}</td>
-            </tr>
-          </table>
-        </div>
-          <progress value.bind="uploadPercent" max="100"></progress>
-        <div style="margin-top: 2px;">
-          <input element.ref="sdUpload" files.bind="files" type="file" hidden/>
-          <button class="btn btn-block btn-primary" click.delegate="upload()">Upload</button>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm">
-      </div>
-
-    </div>
-  </div>
 </template>

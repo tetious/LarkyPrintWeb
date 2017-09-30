@@ -1,49 +1,14 @@
-import { autoinject, bindable } from 'aurelia-framework';
-import { PrinterService, PrinterStatus } from './services/printerService';
+import { RouterConfiguration, Router } from 'aurelia-router';
 
-@autoinject
 export class App {
-  @bindable printer: PrinterStatus;
-  @bindable files: FileList;
-  @bindable sdFiles;
-  @bindable sdUpload: HTMLButtonElement;
-  @bindable uploadPercent = 0;
-  @bindable uploading;
-  @bindable screen: string[];
+  router: Router;
 
-  constructor(private printerService: PrinterService) {
-    this.printerService.subscribeStatusUpdates((s) => {
-      this.printer = s;
-    });
-    this.printerService.subscribeScreenUpdates(s => {
-     this.screen = s;
-    });
-    this.printerService.onOpen.push(() => {
-      this.getSdFiles();
-    });
-  }
-
-  attached() {
-  }
-
-  upload() {
-    this.sdUpload.click();
-  }
-
-  filesChanged() {
-    if (this.files && this.files.length == 1) {
-      this.uploading = true;
-      this.printerService.uploadFile(this.files[0], pct => {
-        this.uploadPercent = pct;
-      }).then(() => this.uploading = false);
-    }
-  }
-
-  getSdFiles() {
-    this.printerService.getSDFiles().then(files => this.sdFiles = files);
-  }
-
-  menu(which) {
-    this.printerService.menu(which);
+  configureRouter(config: RouterConfiguration, router: Router): void {
+    this.router = router;
+    config.title = 'LarkyPrint';
+    config.map([
+      { route: '', name: 'home', moduleId: 'home/index' },
+      { route: 'configuration/wifi', name: 'wifi', moduleId: 'configuration/wifi' },
+    ]);
   }
 }
