@@ -1,57 +1,51 @@
 <template>
 
   <require from="../resources/elements/gage"></require>
+  <require from="css/printer.css"></require>
 
   <div class="container">
     <div class="row">
-      <div class="col-sm-8">
-        <div class="row">
-          <div class="col-sm">
-            <gage style="width: 250px; margin:auto;" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
-          </div>
-          <div class="col-sm">
-            <gage style="width: 250px; margin:auto;" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm">
-            <div class="printer-screen">
-              <div repeat.for="line of screen">
-                <span repeat.for="c of line" innerhtml.bind="c | printerScreenCharacter"></span>
-              </div>
-            </div>
-            <div class="btn-group-vertical printer-screen-buttons">
-              <button class="btn btn-outline-dark" click.trigger="menu('up')"><i class="oi" data-glyph="arrow-top"></i></button>
-              <button class="btn btn-outline-dark" click.trigger="menu('click')">.</button>
-              <button class="btn btn-outline-dark" click.trigger="menu('down')"><i class="oi" data-glyph="arrow-bottom"></i></button>
+      <div class="col-sm-6">
+        <gage style="width: 460px;" label="C" title="E0" value.bind="printer.e0Temp.current"></gage>
+        <gage style="width: 460px;" label="C" title="Bed" value.bind="printer.bedTemp.current"></gage>
+        <div class="centered" style="width: 460px">
+          <div class="printer-screen">
+            <div repeat.for="line of screen">
+              <span repeat.for="c of line" innerhtml.bind="c | printerScreenCharacter"></span>
             </div>
           </div>
-        </div>
-        <div class="row">
+          <div class="v-button-group printer-screen-buttons">
+            <button class="small" click.trigger="menu('up')"><i class="oi" data-glyph="arrow-top"></i></button>
+            <button class="small" click.trigger="menu('click')"><i class="oi" data-glyph="media-record"></i></button>
+            <button class="small" click.trigger="menu('down')"><i class="oi" data-glyph="arrow-bottom"></i></button>
+          </div>
         </div>
       </div>
-      <div class="col-sm">
-        <button class="btn btn-light" style="float: right" click.trigger="getSdFiles()"><i class="oi" data-glyph="reload"></i></button>
+      <div class="col-sm" style="max-width: 510px">
+        <button class="small" style="float: right" click.trigger="getSdFiles()"><i class="oi" data-glyph="reload"></i></button>
         <h3>SD Card</h3>
-        <div style="overflow: auto; height: 500px">
-          <table class="table table-sm">
+        <div class="sd">
+          <table class="sd">
+            <colgroup>
+              <col style="width: 10px" />
+              <col />
+              <col style="width: 100px;" />
+              <col style="width: 10px" />
+            </colgroup>
             <tr repeat.for="file of sdFiles">
+              <td><button class="small"><i class="oi" data-glyph="print"></i></button></td>
               <td>${file.name}</td>
-              <td>${file.size | humanFileSize}</td>
+              <td class="size">${file.size | humanFileSize}</td>
+              <td><button class="small"><i class="oi" data-glyph="delete"></i></button></td>
             </tr>
           </table>
         </div>
-          <progress value.bind="uploadPercent" max="100"></progress>
+        <progress if.bind="uploading" value.bind="uploadPercent" max="100"></progress>
         <div style="margin-top: 2px;">
           <input element.ref="sdUpload" files.bind="files" type="file" hidden/>
-          <button class="btn btn-block btn-primary" click.delegate="upload()">Upload</button>
+          <button class="primary" click.delegate="upload()">Upload</button>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm">
-      </div>
-
     </div>
   </div>
 </template>
