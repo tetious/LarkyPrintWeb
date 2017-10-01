@@ -1,3 +1,5 @@
+import { WifiStatus } from "../../services/configurationService";
+
 export class HumanFileSizeValueConverter {
   toView(value) {
     if (!value || isNaN(value)) return;
@@ -17,10 +19,17 @@ export class PrinterScreenCharacterValueConverter {
       case 0x02: 
         return '&nbsp;';
       case 0x03:
-        return '<img src="/iconic/arrow-circle-top.svg"/>'
+        return '<i class="oi" data-glyph="arrow-top"></i>'
     }
 
     return '&nbsp;';
+  }
+}
+
+export class ConnectionStatusValueConverter {
+  toView(value) {
+    if (!value) return;
+    return WifiStatus[value];
   }
 }
 
