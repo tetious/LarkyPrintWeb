@@ -1,52 +1,54 @@
 <template>
-<div class="container">
-  <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
-      <div class="card fluid">
-        <h3 class="centered">Temporary WiFi joiny thing</h3>
-        <h3>Status: <span id="status"></span></h3>
-        <h3>IP Address: <span id="ip"></span></h3>
-      </div>
-      <div class="card fluid" style="min-height: 200px">
-        <table style="width: 100%">
-          <caption>Networks</caption>
-          <thead>
-          <tr>
-            <th style="width: 2em;"></th>
-            <th>SSID</th>
-            <th style="width: 4em;">Strength</th>
-          </tr>
-          </thead>
-          <tbody id="networksBody" repeat.for="i of wifiNetworks">
-              <tr class='network'>
-                <td></td>
-                <td>${i.ssid} (${i.secure ? "S" : ""})</td>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+        <div class="card fluid">
+          <h3 class="centered">Temporary WiFi joiny thing</h3>
+          <h3>Status: ${status.status | connectionStatus}</h3>
+          <h3>IP Address: ${status.ip}</h3>
+        </div>
+        <div class="card fluid" style="min-height: 200px">
+          <table style="width: 100%">
+            <caption>Networks</caption>
+            <thead>
+              <tr>
+                <th style="width: 2em;"></th>
+                <th>SSID</th>
+                <th style="width: 4em;">Strength</th>
+              </tr>
+            </thead>
+            <tbody id="networksBody" repeat.for="i of wifiNetworks">
+              <tr class='network ${status.ssid == i.ssid ? 'connected' : ''}' click.trigger="networkSelected(i)">
+                <td>
+                  <i class="oi" data-glyph="lock-${i.secure ? 'locked' : 'unlocked'}"></i>
+                </td>
+                <td>${i.ssid}</td>
                 <td>${i.rssi}</td>
               </tr>
-          </tbody>
-        </table>
-        <div id="networksLoading" class="hidden spinner-donut large centered"></div>
-        <div id="buttons">
-          <input id="rescan" type="button" class="primary" click.trigger="refreshNetworks" value="Rescan">
-          <input id="updateStatus" type="button" class="primary" value="Update Status">
+            </tbody>
+          </table>
+          <div if.bind="loading" class="spinner-donut large centered"></div>
+          <div id="buttons">
+            <input type="button" class="primary" click.trigger="refreshNetworks()" value="Rescan">
+            <input type="button" class="primary" click.trigger="refreshStatus()" value="Update Status">
+          </div>
         </div>
+        <form>
+          <fieldset>
+            <legend>Connect to a network</legend>
+            <div class="input-group fluid vertical">
+              <label for="ssid">SSID</label>
+              <input type="text" value.bind="ssid" id="ssid" required placeholder="SSID">
+            </div>
+            <div class="input-group fluid vertical">
+              <label for="password">Password</label>
+              <input type="password" value.bind="password" required.bind="passwordRequired" id="password" placeholder="password">
+            </div>
+            <input id="connect" type="submit" click.trigger="connect()" class="primary fluid" value="Connect">
+          </fieldset>
+        </form>
       </div>
-      <form>
-        <fieldset>
-          <legend>Connect to a network</legend>
-          <div class="input-group fluid vertical">
-            <label for="ssid">SSID</label>
-            <input type="text" value="" id="ssid" required placeholder="SSID">
-          </div>
-          <div class="input-group fluid vertical">
-            <label for="password">Password</label>
-            <input type="password" value="" id="password" placeholder="password">
-          </div>
-          <input id="connect" type="submit" class="primary fluid" value="Connect">
-        </fieldset>
-      </form>
     </div>
-  </div>
 
-</div>
+  </div>
 </template>

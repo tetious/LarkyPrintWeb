@@ -25,7 +25,7 @@ export interface WifiNetwork {
 
 @autoinject
 export class ConfigurationService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getStatus(): Promise<ConnectionStatus> {
     return new Promise(resolve => {
@@ -36,6 +36,12 @@ export class ConfigurationService {
   getNetworks(): Promise<WifiNetwork[]> {
     return new Promise(resolve => {
       this.http.get(Configuration.apiBase + "/wifi").then(r => resolve(r.content));
+    });
+  }
+
+  wifiConnect(ssid, password) {
+    return new Promise(resolve => {
+      this.http.post(Configuration.apiBase + "/wifi", { ssid, password }).then(r => resolve(r.content));
     });
   }
 
